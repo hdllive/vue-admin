@@ -1,0 +1,23 @@
+import request from '@/utils/request'
+
+/**
+ *
+ * @returns 获取所有角色列表
+ */
+export const getRolesAll = () => {
+  return request({
+    url: 'roles'
+  })
+}
+
+/**
+ *删除角色指定权限
+ * @param {角色 ID,权限 ID} param0
+ * @returns
+ */
+export const delRolesItem = ({ roleId, rightId }) => {
+  return request({
+    method: 'DELETE',
+    url: `roles/${roleId}/rights/${rightId}`
+  })
+}
