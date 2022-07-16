@@ -76,8 +76,19 @@
     </div>
 
     <!-- 分配权限提示框-->
-    <el-dialog title="分配权限" :visible.sync="dialogVisible" width="30%">
-      <span>这是一段信息</span>
+    <el-dialog title="分配权限" :visible.sync="dialogVisible" width="50%">
+      <span>
+        <el-tree
+          :data="tree"
+          show-checkbox
+          default-expand-all
+          node-key="id"
+          ref="tree"
+          highlight-current
+          :props="defaultProps"
+        >
+        </el-tree>
+      </span>
       <span slot="footer" class="dialog-footer">
         <el-button @click="dialogVisible = false">取 消</el-button>
         <el-button type="primary" @click="dialogVisible = false"
@@ -89,7 +100,7 @@
     <!-- 点击删除权限提示框 -->
     <el-dialog title="提示" :visible.sync="dialogVisible1" width="25%">
       <span>
-        <i class="el-icon-warning" style="color: red"></i
+        <i class="el-icon-warning" style="color: #e6a23c; font-size: 18px"></i
         >此操作将永久删除该用户的权限, 是否继续?</span
       >
       <span slot="footer" class="dialog-footer">
@@ -98,19 +109,20 @@
             dialogVisible1 = false;
             $message('已取消删除');
           "
-          >取 消</el-button
+          >取消</el-button
         >
-        <el-button type="primary" @click="btnFn()">确 定</el-button>
+        <el-button type="primary" @click="btnFn()">确定</el-button>
       </span>
     </el-dialog>
   </div>
 </template>
 
 <script>
-import { getRolesAll, delRolesItem } from '@/api/roles'
+import { getRolesAll, delRolesItem, getTreeList } from '@/api/roles'
 export default {
   created () {
     this.getRolesAll()
+    this.getTreeList()
   },
   data () {
     return {
@@ -118,7 +130,47 @@ export default {
       dialogVisible: false, // 分配权限弹出框
       dynamicTags: [],
       dialogVisible1: false,
-      tagList: {}
+      tagList: {}, // 删除单个权限的参数
+      tree: [], // 树形总数据
+      data: [{
+        id: 1,
+        label: '一级 1',
+        children: [{
+          id: 4,
+          label: '二级 1-1',
+          children: [{
+            id: 9,
+            label: '三级 1-1-1'
+          }, {
+            id: 10,
+            label: '三级 1-1-2'
+          }]
+        }]
+      }, {
+        id: 2,
+        label: '一级 2',
+        children: [{
+          id: 5,
+          label: '二级 2-1'
+        }, {
+          id: 6,
+          label: '二级 2-2'
+        }]
+      }, {
+        id: 3,
+        label: '一级 3',
+        children: [{
+          id: 7,
+          label: '二级 3-1'
+        }, {
+          id: 8,
+          label: '二级 3-2'
+        }]
+      }],
+      defaultProps: {
+        children: 'children',
+        label: 'authName'
+      }
     }
   },
   methods: {
@@ -158,6 +210,15 @@ export default {
       this.dialogVisible1 = false
       console.log(this.tagList)
       this.handleClose(this.tagList)
+    },
+    async getTreeList () {
+      try {
+        const res = await getTreeList()
+        console.log(res)
+        this.tree = res.data.data
+      } catch (err) {
+        console.log(err)
+      }
     }
   },
   computed: {},

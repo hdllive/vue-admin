@@ -52,24 +52,24 @@
           </el-submenu>
           <el-submenu index="3">
             <template #title><i class="el-icon-s-goods"></i>商品管理</template>
-            <el-menu-item index="3-1"
+            <el-menu-item index="/goods"
               ><i class="el-icon-menu"></i>商品列表</el-menu-item
             >
-            <el-menu-item index="3-1"
+            <el-menu-item index="/params"
               ><i class="el-icon-menu"></i>分类参数</el-menu-item
             >
-            <el-menu-item index="3-1"
+            <el-menu-item index="/categories"
               ><i class="el-icon-menu"></i>商品分类</el-menu-item
             >
           </el-submenu>
           <el-submenu index="4">
             <template #title><i class="el-icon-s-order"></i>订单管理</template>
-            <el-menu-item index="2-1"
+            <el-menu-item index="/orders"
               ><i class="el-icon-menu"></i>订单列表</el-menu-item
             > </el-submenu
           ><el-submenu index="5">
             <template #title><i class="el-icon-s-data"></i>数据统计</template>
-            <el-menu-item index="2-1"
+            <el-menu-item index="/reports"
               ><i class="el-icon-menu"></i>数据报表</el-menu-item
             >
           </el-submenu>
@@ -99,6 +99,8 @@ export default {
     },
     cearlFn () {
       this.dialogVisible = false
+      this.$store.commit('setToken', '')
+
       this.$router.push('/login')
     },
     fold () {

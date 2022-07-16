@@ -10,9 +10,14 @@ const routes = [
     path: '/home',
     component: () => import('@/views/Home'),
     children: [
-      { path: '/users', component: () => import('@/views/Users') },
-      { path: '/roles', component: () => import('@/views/Roles') },
-      { path: '/rights', component: () => import('@/views/Rights') }
+      { path: '/users', component: () => import('@/views/Users'), name: 'users' },
+      { path: '/roles', component: () => import('@/views/Roles'), name: 'roles' },
+      { path: '/rights', component: () => import('@/views/Rights'), name: 'rights' },
+      { path: '/goods', component: () => import('@/views/Goods'), name: 'goods' },
+      { path: '/params', component: () => import('@/views/Params'), name: 'params' },
+      { path: '/categories', component: () => import('@/views/Categories'), name: 'categories' },
+      { path: '/orders', component: () => import('@/views/Orders'), name: 'orders' },
+      { path: '/reports', component: () => import('@/views/Reports'), name: 'reports' }
     ]
   }
 

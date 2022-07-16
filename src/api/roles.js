@@ -21,3 +21,20 @@ export const delRolesItem = ({ roleId, rightId }) => {
     url: `roles/${roleId}/rights/${rightId}`
   })
 }
+
+/**
+ *
+ * @returns 获取树形数据
+ */
+export const getTreeList = () => {
+  return request({
+    url: 'rights/tree'
+  })
+}
+
+// 获取所有权限列表
+export const getRightsList = () => {
+  return request({
+    url: 'rights/list'
+  })
+}

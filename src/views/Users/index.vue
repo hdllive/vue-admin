@@ -17,6 +17,7 @@
               class="input-with-select"
               clearable
               @clear="getUserList"
+              @keyup.native.enter="getUserList"
             >
               <el-button
                 @click="getUserList"
@@ -211,7 +212,6 @@ export default {
       }
     }
     return {
-
       tableData: [], // 用户总数据
       value: false, // 状态按钮
       dialogVisible: false, // 删除用户弹出框状态
@@ -273,7 +273,7 @@ export default {
         console.log(res)
         this.tableData = res.data.data.users
         this.params.total = res.data.data.total
-        this.$message.success('搜索成功')
+        this.$message.success('更新成功')
       } catch (err) {
         console.log(err)
       }

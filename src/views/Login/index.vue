@@ -14,6 +14,7 @@
             <el-input
               v-model="loginForm.password"
               prefix-icon="el-icon-lock"
+              @keyup.native.enter="login"
             ></el-input>
           </el-form-item>
           <el-form-item class="btn-item">
@@ -69,8 +70,9 @@ export default {
               message: '登录成功！',
               type: 'success'
             })
-            this.$router.push('/home')
             this.$store.commit('setToken', res.data.data.token)
+            this.$store.commit('setTime')
+            this.$router.push('/home')
           }
         } catch (err) {
           console.log(err)

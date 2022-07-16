@@ -1,5 +1,7 @@
 import axios from 'axios'
 import store from '@/store'
+import router from '@/router'
+import { Message } from 'element-ui'
 
 const request = axios.create({
   baseURL: 'http://liufusong.top:8899/api/private/v1/'
@@ -8,10 +10,18 @@ const request = axios.create({
 
 // 添加请求拦截器
 request.interceptors.request.use(function (config) {
+  const token = store.state.token
+  const loginTime = store.state.time // 刚刚登录的时间
+  const actionTime = Date.now() - loginTime // 计算登录时长
   // 在发送请求之前做些什么
-  if (store.state.token) {
+  if (token) {
+    if (actionTime > 7200000) { // 判断登录时长是否有两小时
+      store.dispatch('logout')
+      router.push('/login')
+      Message.error('身份过期，请重新登录')
+    }
     config.headers = {
-      Authorization: store.state.token
+      Authorization: token
     }
   }
   return config
