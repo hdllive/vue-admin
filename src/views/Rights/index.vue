@@ -63,10 +63,10 @@ export default {
 </script>
 
 <style scoped lang='less'>
-::v-deep .table {
+.table {
   margin-top: 15px;
 }
-::v-deep .top {
+.top {
   margin-top: 15px;
 }
 </style>

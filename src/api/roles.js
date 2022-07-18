@@ -38,3 +38,11 @@ export const getRightsList = () => {
     url: 'rights/list'
   })
 }
+
+export const setRolesRights = ({ roleId, rids }) => {
+  return request({
+    method: 'POST',
+    url: `roles/${roleId}/rights`,
+    data: { rids }
+  })
+}

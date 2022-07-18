@@ -18,3 +18,19 @@ export const searchGoodsId = (id) => {
     url: `goods/${id}`
   })
 }
+
+// 商品分类数据列表
+export const getAategoriesList = (params) => {
+  return request({
+    url: 'categories',
+    params
+  })
+}
+
+// 商品分类参数管理
+export const getAttributes = ({ id, sel }) => {
+  return request({
+    url: `categories/${id}/attributes`,
+    params: { sel }
+  })
+}

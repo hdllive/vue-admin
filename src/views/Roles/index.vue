@@ -58,19 +58,21 @@
         <el-table-column prop="roleDesc" label="角色描述" width="370">
         </el-table-column>
         <el-table-column prop="address" label="操作">
-          <el-button type="primary" icon="el-icon-edit" size="small"
-            >编辑</el-button
-          >
-          <el-button type="danger" icon="el-icon-delete" size="small">
-            删除</el-button
-          >
-          <el-button
-            type="warning"
-            icon="el-icon-s-tools"
-            size="small"
-            @click="dialogVisible = true"
-            >分配权限</el-button
-          >
+          <template v-slot="{ row }">
+            <el-button type="primary" icon="el-icon-edit" size="small"
+              >编辑</el-button
+            >
+            <el-button type="danger" icon="el-icon-delete" size="small">
+              删除</el-button
+            >
+            <el-button
+              type="warning"
+              icon="el-icon-s-tools"
+              size="small"
+              @click="addRolesList(row.children, row)"
+              >分配权限</el-button
+            >
+          </template>
         </el-table-column>
       </el-table>
     </div>
@@ -86,14 +88,13 @@
           ref="tree"
           highlight-current
           :props="defaultProps"
+          :default-checked-keys="defaultListId"
         >
         </el-tree>
       </span>
       <span slot="footer" class="dialog-footer">
         <el-button @click="dialogVisible = false">取 消</el-button>
-        <el-button type="primary" @click="dialogVisible = false"
-          >确 定</el-button
-        >
+        <el-button type="primary" @click="addbtn">确 定</el-button>
       </span>
     </el-dialog>
 
@@ -118,7 +119,7 @@
 </template>
 
 <script>
-import { getRolesAll, delRolesItem, getTreeList } from '@/api/roles'
+import { getRolesAll, delRolesItem, getTreeList, setRolesRights } from '@/api/roles'
 export default {
   created () {
     this.getRolesAll()
@@ -126,50 +127,20 @@ export default {
   },
   data () {
     return {
-      tableData: [],
+      tableData: [], // 用户总数据
       dialogVisible: false, // 分配权限弹出框
       dynamicTags: [],
       dialogVisible1: false,
       tagList: {}, // 删除单个权限的参数
       tree: [], // 树形总数据
-      data: [{
-        id: 1,
-        label: '一级 1',
-        children: [{
-          id: 4,
-          label: '二级 1-1',
-          children: [{
-            id: 9,
-            label: '三级 1-1-1'
-          }, {
-            id: 10,
-            label: '三级 1-1-2'
-          }]
-        }]
-      }, {
-        id: 2,
-        label: '一级 2',
-        children: [{
-          id: 5,
-          label: '二级 2-1'
-        }, {
-          id: 6,
-          label: '二级 2-2'
-        }]
-      }, {
-        id: 3,
-        label: '一级 3',
-        children: [{
-          id: 7,
-          label: '二级 3-1'
-        }, {
-          id: 8,
-          label: '二级 3-2'
-        }]
-      }],
       defaultProps: {
         children: 'children',
         label: 'authName'
+      },
+      defaultListId: [], // 默认已经选中的数据id
+      rolesAllId: {
+        nowRoled: '', // 当前行的角色id
+        ridsList: '' // 已被勾选选中的keyid
       }
     }
   },
@@ -181,7 +152,7 @@ export default {
     async getRolesAll () {
       try {
         const res = await getRolesAll()
-        console.log(res)
+        console.log('Roles', res)
         this.tableData = res.data.data
       } catch (err) {
         console.log(err)
@@ -211,14 +182,44 @@ export default {
       console.log(this.tagList)
       this.handleClose(this.tagList)
     },
-    async getTreeList () {
+    addRolesList (row, rowAll) {
+      this.dialogVisible = true
+      this.filterListId(row)
+      // console.log(rowAll)
+      this.rolesAllId.nowRoled = rowAll.id
+    },
+    filterListId (row) { // 递归函数拿到已选中的id值
+      // console.log(row)
+      row.forEach(item => {
+        if (item.children) {
+          this.filterListId(item.children)
+        } else {
+          this.defaultListId.push(item.id)
+        }
+      })
+    },
+    async getTreeList () { // 获取树形结构数据
       try {
         const res = await getTreeList()
-        console.log(res)
+        console.log('treedata', res)
         this.tree = res.data.data
       } catch (err) {
         console.log(err)
       }
+    },
+    async addbtn () { // 点击确定角色授权接口
+      this.dialogVisible = false
+      // console.log(this.$refs.tree.getCheckedKeys())
+      // console.log(this.$refs.tree.getHalfCheckedKeys())
+      // 获取当前点击的keyid值，一起存起来合并，需要的数据是字符串，用join拼接改一下
+      this.rolesAllId.ridsList = [...this.$refs.tree.getCheckedKeys(), ...this.$refs.tree.getHalfCheckedKeys()].join(',')
+      console.log(this.rolesAllId)
+      const res = await setRolesRights({
+        roleId: this.rolesAllId.nowRoled,
+        rids: this.rolesAllId.ridsList
+      })
+      console.log(res)
+      this.$message.success('更新成功')
     }
   },
   computed: {},

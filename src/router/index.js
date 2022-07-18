@@ -13,7 +13,10 @@ const routes = [
       { path: '/users', component: () => import('@/views/Users'), name: 'users' },
       { path: '/roles', component: () => import('@/views/Roles'), name: 'roles' },
       { path: '/rights', component: () => import('@/views/Rights'), name: 'rights' },
-      { path: '/goods', component: () => import('@/views/Goods'), name: 'goods' },
+      {
+        path: '/goods', component: () => import('@/views/Goods'), name: 'goods'
+      },
+      { path: '/goods/add', component: () => import('@/views/Goods/Add'), name: 'GoodsAdd' },
       { path: '/params', component: () => import('@/views/Params'), name: 'params' },
       { path: '/categories', component: () => import('@/views/Categories'), name: 'categories' },
       { path: '/orders', component: () => import('@/views/Orders'), name: 'orders' },

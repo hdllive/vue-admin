@@ -28,7 +28,9 @@
         ></el-col>
         <el-col :span="16"
           ><div class="grid-content bg-purple-light">
-            <el-button type="primary">添加商品</el-button>
+            <el-button type="primary" @click="$router.push('/goods/add')"
+              >添加商品</el-button
+            >
           </div></el-col
         >
       </el-row>
@@ -44,7 +46,12 @@
         stripe
       >
         <el-table-column type="index" label="#" width="50"> </el-table-column>
-        <el-table-column property="goods_name" label="商品名称" width="480">
+        <el-table-column
+          property="goods_name"
+          label="商品名称"
+          width="480"
+          show-overflow-tooltip
+        >
         </el-table-column>
         <el-table-column
           property="goods_price"
@@ -54,7 +61,10 @@
         </el-table-column>
         <el-table-column property="goods_weight" label="商品重量" width="160">
         </el-table-column>
-        <el-table-column property="add_time" label="创建时间" width="160">
+        <el-table-column label="创建时间" width="160">
+          <template v-slot="{ row }">
+            {{ row.add_time | formatDate }}
+          </template>
         </el-table-column>
         <el-table-column label="操作">
           <el-button type="primary" icon="el-icon-edit" size="small"
@@ -73,7 +83,7 @@
           @current-change="handleCurrentChange"
           :current-page="params.pagenum"
           :page-sizes="[1, 3, 5, 10]"
-          :page-size="5"
+          :page-size="8"
           layout="total, sizes, prev, pager, next, jumper"
           :total="total"
         >
@@ -85,6 +95,7 @@
 
 <script>
 import { getGoodsList } from '@/api/goods'
+import dayjs from 'dayjs'
 export default {
   created () {
     this.getGoodsList()
@@ -95,7 +106,7 @@ export default {
       params: {
         query: '',
         pagenum: 1,
-        pagesize: 10
+        pagesize: 8
       },
       total: null
     }
@@ -135,7 +146,11 @@ export default {
   },
   computed: {},
   watch: {},
-  filters: {},
+  filters: {
+    formatDate (value) {
+      return dayjs.unix(value).format('YYYY-MM-DD')
+    }
+  },
   components: {}
 }
 </script>
