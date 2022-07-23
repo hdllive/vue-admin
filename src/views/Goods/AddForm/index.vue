@@ -1,28 +1,25 @@
 <template>
   <el-form :model="formList" :rules="rules" ref="FormRef">
     <el-form-item label="商品名称" prop="name">
-      <el-input v-model="formList.name">123</el-input>
+      <el-input v-model="formList.name"></el-input>
     </el-form-item>
     <el-form-item label="商品价格" prop="price">
-      <el-input v-model="formList.price">123</el-input>
+      <el-input v-model="formList.price"></el-input>
     </el-form-item>
     <el-form-item label="商品重量" prop="weight">
-      <el-input v-model="formList.weight">123</el-input>
+      <el-input v-model="formList.weight"></el-input>
     </el-form-item>
     <el-form-item label="商品数量" prop="num">
-      <el-input v-model="formList.num">123</el-input>
+      <el-input v-model="formList.num"></el-input>
     </el-form-item>
-    <el-form-item label="商品分类" prop="formList">
-      <div class="block">
-        <el-cascader
-          placeholder="请选择"
-          v-model="formList.selectValue"
-          :options="dataList"
-          :props="optionProps"
-          @change="selectFn"
-          :show-all-levels="false"
-        ></el-cascader>
-      </div>
+    <el-form-item label="商品分类">
+      <el-cascader
+        placeholder="请选择"
+        v-model="formList.selectValue"
+        :options="dataList"
+        :props="optionProps"
+        @change="selectFn"
+      ></el-cascader>
     </el-form-item>
   </el-form>
 </template>
@@ -47,15 +44,14 @@ export default {
         selectValue: ''
       },
       optionProps: { // 下拉框的匹配规则
-        value: 'act_id',
+        value: 'cat_id',
         label: 'cat_name',
-        children: 'children',
         expandTrigger: 'hover'
       },
       rules: {
         name: [
           { required: true, message: '请输入商品名称', tirgger: 'blur' },
-          { min: 2, max: 2, message: '长度在2-8个字符之间', targger: 'blur' }
+          { min: 2, max: 8, message: '长度在2-8个字符之间', targger: 'blur' }
         ],
         price: [
           { required: true, message: '请输入商品价格', targger: 'blur' }
@@ -76,8 +72,9 @@ export default {
   },
   methods: {
     selectFn (value) {
-      // this.$emit('selectFn')
       console.log(value)
+      this.$emit('selectFn', value)
+      this.$emit('addForm', this.formList)
     }
   },
   computed: {},

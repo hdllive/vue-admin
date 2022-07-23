@@ -181,6 +181,7 @@ export default {
       this.dialogVisible1 = false
       console.log(this.tagList)
       this.handleClose(this.tagList)
+      this.getRolesAll()
     },
     addRolesList (row, rowAll) {
       this.dialogVisible = true

@@ -6,6 +6,8 @@ import '@/styles/reset.less'
 import ElementUI from 'element-ui'
 import 'element-ui/lib/theme-chalk/index.css'
 import '@/premission'
+import VueQuillEditor from 'vue-quill-editor'
+Vue.use(VueQuillEditor)
 
 Vue.config.productionTip = false
 Vue.use(ElementUI)
