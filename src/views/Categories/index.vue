@@ -10,8 +10,17 @@
       <el-button type="primary" @click="addClass">添加分类</el-button>
 
       <!-- 表格 -->
-      <el-table class="table" :data="tableData" border style="width: 100%">
-        <el-table-column type="index" label="#" width="50"> </el-table-column>
+      <el-table
+        class="table"
+        :data="tableData"
+        border
+        style="width: 100%"
+        row-key="cat_id"
+        :tree-props="{ children: 'children', hasChildren: 'hasChildren' }"
+      >
+        <el-table-column type="index" label="#" width="50">
+          <template v-slot="{ row }">{{ row.index }}</template>
+        </el-table-column>
         <el-table-column prop="cat_name" label="分类名称" width="280">
         </el-table-column>
         <el-table-column prop="cat_deleted" label="是否有效" width="280">
@@ -61,6 +70,7 @@
         <el-form-item label="父级分类:" label-width="100px">
           <el-cascader
             v-model="value"
+            ref="casc"
             :options="classList"
             :props="optionProps"
             @change="handleChange"
@@ -69,16 +79,14 @@
       </el-form>
       <span slot="footer" class="dialog-footer">
         <el-button @click="dialogVisible = false">取 消</el-button>
-        <el-button type="primary" @click="dialogVisible = false"
-          >确 定</el-button
-        >
+        <el-button type="primary" @click="addCategories">确 定</el-button>
       </span>
     </el-dialog>
   </div>
 </template>
 
 <script>
-import { getAategoriesList } from '@/api/goods'
+import { getAategoriesList, addCategories } from '@/api/goods'
 export default {
   created () {
     this.getAategoriesList()
@@ -92,7 +100,7 @@ export default {
       },
       dialogVisible: false,
       optionProps: { // 下拉框的配置
-        value: 'act_id',
+        value: 'cat_id',
         label: 'cat_name',
         children: 'children',
         expandTrigger: 'hover',
@@ -113,7 +121,12 @@ export default {
         pagenum: 1,
         pagesize: 4
       },
-      total: null
+      total: null,
+      dataList: { // 添加接口参数
+        cat_pid: '',
+        cat_name: '',
+        cat_level: ''
+      }
     }
   },
   methods: {
@@ -121,6 +134,10 @@ export default {
       const res = await getAategoriesList(this.params)
       console.log(res)
       this.tableData = res.data.data.result
+      // 为每个列表添加一个索引
+      for (let i = 0; i < this.tableData.length; i++) {
+        this.tableData[i].index = i + 1
+      }
       this.total = res.data.data.total
     },
     async addClass () { // 下拉框的接口
@@ -133,6 +150,10 @@ export default {
     },
     handleChange (value) { // 选择下拉框的事件
       console.log(value)
+      this.dataList.cat_pid = value[value.length - 1]
+      this.dataList.cat_level = this.$refs.casc.getCheckedNodes()[0].level
+      console.log(this.dataList.cat_level)
+      this.dataList.cat_name = this.classForm.classVaule
     },
     handleSizeChange (newval) { // 每页条数
       console.log(`每页 ${newval} 条`)
@@ -143,6 +164,12 @@ export default {
       console.log(`当前页: ${newval}`)
       this.params.pagenum = newval
       this.getAategoriesList(this.params1)
+    },
+    async addCategories () { // 添加按钮
+      const res = await addCategories(this.dataList)
+      console.log(res)
+      this.$message.success('创建成功')
+      this.dialogVisible = false
     }
   },
   computed: {},

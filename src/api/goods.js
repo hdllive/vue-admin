@@ -95,3 +95,12 @@ export const setGoodsAttributes = (data) => {
     data
   })
 }
+
+//  添加分类
+export const addCategories = (data) => {
+  return request({
+    method: 'POST',
+    url: 'categories',
+    data
+  })
+}
